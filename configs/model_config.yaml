@@ -1,0 +1,21 @@
+model:
+  vocab_size: 50257
+  n_layer: 24
+  n_head: 16
+  n_embd: 1536
+  context_length: 2048
+  dropout: 0.0
+  bias: false
+  
+  # Positional encoding
+  use_rope: true  # Rotary Position Embeddings (RoPE)
+  rope_theta: 10000.0
+  
+  # Attention
+  use_flash_attn: false  # Disabled for testing
+  
+  # Normalization
+  layer_norm_epsilon: 1e-5
+  
+  # Feed-forward
+  ffn_hidden_mult: 4  # FFN hidden size = n_embd * 4

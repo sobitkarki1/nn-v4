@@ -1,0 +1,52 @@
+training:
+  # Batch configuration
+  batch_size: 1  # Per-device batch size
+  gradient_accumulation_steps: 8  # Effective batch size = 1 * 8 = 8
+  max_steps: 200000  # Total training steps
+  max_epochs: null  # Set to limit epochs instead of steps
+  
+  # Optimization
+  learning_rate: 3.0e-4
+  weight_decay: 0.1
+  beta1: 0.9
+  beta2: 0.95
+  eps: 1.0e-8
+  max_grad_norm: 1.0  # Gradient clipping
+  
+  # Learning rate schedule
+  lr_scheduler: "cosine"  # cosine, linear, constant
+  warmup_steps: 2000
+  min_lr: 6.0e-5  # Minimum LR for cosine decay
+  
+  # Memory optimization
+  mixed_precision: true  # Use FP16/BF16
+  precision_type: "fp16"  # fp16 or bf16
+  gradient_checkpointing: true  # Recompute activations
+  use_8bit_optimizer: false  # bitsandbytes 8-bit Adam
+  
+  # Performance
+  compile_model: true  # torch.compile (PyTorch 2.0+)
+  num_workers: 4  # DataLoader workers
+  pin_memory: true
+
+checkpoint:
+  save_interval: 100  # Save every N steps
+  keep_last_n: 3  # Keep last N checkpoints
+  save_on_interrupt: true  # Save on Ctrl+C
+  save_best: true  # Save best validation checkpoint
+  checkpoint_dir: "checkpoints"
+
+logging:
+  log_interval: 10  # Log every N steps
+  eval_interval: 50  # Evaluate every N steps
+  eval_batches: 20  # Number of batches for evaluation
+  
+  # Logging backends
+  use_wandb: false  # Weights & Biases
+  use_tensorboard: true
+  
+  wandb_project: "llm-2gb-training"
+  wandb_entity: null  # Your wandb username
+  tensorboard_dir: "logs/tensorboard"
+
+seed: 42
