@@ -1,8 +1,13 @@
 """Text generation utilities."""
 import torch
+import sys
+from pathlib import Path
 from typing import Optional, List
-from ..models import TransformerLM
-from ..data import Tokenizer
+
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from models import TransformerLM
+from data import Tokenizer
 
 
 @torch.no_grad()

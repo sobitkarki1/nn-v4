@@ -14,6 +14,8 @@ dataset:
   
   # Tokenizer
   tokenizer_type: "gpt2"  # gpt2, custom, or path to tokenizer
+  # This tokenizer has vocab size of 50k which is fine for now
+
   tokenizer_path: null  # Path to custom tokenizer if needed
   
   # Cache

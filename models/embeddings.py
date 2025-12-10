@@ -30,7 +30,8 @@ class RotaryPositionalEmbedding(nn.Module):
         t = torch.arange(seq_len, dtype=self.inv_freq.dtype, device=self.inv_freq.device)
         freqs = torch.outer(t, self.inv_freq)
         
-        # Create rotation matrix [seq_len, dim/2]
+        # Create rotation matrix [seq_len, dim]
+        # We duplicate to match full head dimension
         emb = torch.cat([freqs, freqs], dim=-1)
         
         self.register_buffer("cos_cached", emb.cos(), persistent=False)
@@ -73,14 +74,19 @@ class RotaryPositionalEmbedding(nn.Module):
         cos = cos.unsqueeze(0).unsqueeze(0)  # [1, 1, seq_len, head_dim]
         sin = sin.unsqueeze(0).unsqueeze(0)
         
-        # Split x into two halves and apply rotation
-        x1 = x[..., :x.shape[-1] // 2]
-        x2 = x[..., x.shape[-1] // 2:]
+        # Split x into two halves for rotation
+        head_dim = x.shape[-1]
+        x1 = x[..., :head_dim // 2]
+        x2 = x[..., head_dim // 2:]
+        
+        # Get corresponding cos/sin values for each half
+        cos_half = cos[..., :head_dim // 2]
+        sin_half = sin[..., :head_dim // 2]
         
         # Rotation formula: [x1, x2] @ [[cos, -sin], [sin, cos]]
         rotated = torch.cat([
-            x1 * cos - x2 * sin,
-            x1 * sin + x2 * cos
+            x1 * cos_half - x2 * sin_half,
+            x1 * sin_half + x2 * cos_half
         ], dim=-1)
         
         return rotated
